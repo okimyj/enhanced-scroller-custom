@@ -9,9 +9,15 @@ namespace EnhancedUI.EnhancedScroller
     where TContext : IEnhancedScrollerContext
     {
         [SerializeField] public TContext Context { get; private set; }
+        protected TCellData cellData;
         public float CellSize;
         public virtual void SetCellData(TCellData cellData)
         {
+            this.cellData = cellData;
+        }
+        public override void RefreshCellView()
+        {
+            SetCellData(cellData);
         }
         public virtual void SetContext(TContext context)
         {

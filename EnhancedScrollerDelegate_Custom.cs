@@ -10,35 +10,42 @@ namespace EnhancedUI.EnhancedScroller
     {
         [SerializeField] protected EnhancedScroller scroller;
         protected List<TCellData> cellDatas = new List<TCellData>();
-        private void Awake()
+        private void Start()
         {
             scroller.Delegate = this;
+
+            Initialize();
         }
+        protected virtual void Initialize() { }
+        public abstract EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex);
         public virtual void SetCellDatas(List<TCellData> cellDatas)
         {
             this.cellDatas = cellDatas;
             scroller.ReloadData();
         }
-        public abstract EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex);
+
 
         public abstract float GetCellViewSize(EnhancedScroller scroller, int dataIndex);
 
-        public int GetNumberOfCells(EnhancedScroller scroller)
+        public virtual int GetNumberOfCells(EnhancedScroller scroller)
         {
             return cellDatas.Count;
         }
     }
-    public abstract class EnhancedScrollerDelegate<TCellData, TCellView> : EnhancedScrollerDelegate<TCellData>
-     where TCellData : IEnhancedScrollerCellData
-     where TCellView : EnhancedScrollerCellView<TCellData>
+    public abstract class EnhancedScrollerDelegate<TCellData, TCellView, TContext> : EnhancedScrollerDelegate<TCellData>
+    where TCellData : IEnhancedScrollerCellData
+    where TCellView : EnhancedScrollerCellView<TCellData, TContext>
+    where TContext : class, IEnhancedScrollerContext, new()
     {
 
+        public TContext Context { get; } = new TContext();
         [SerializeField] protected TCellView defaultCellPrefab;
 
         public override EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
             var cellView = scroller.GetCellView(defaultCellPrefab) as TCellView;
             cellView.SetCellData(cellDatas[dataIndex]);
+            cellView.SetContext(Context);
             return cellView;
         }
         public override float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
@@ -52,5 +59,16 @@ namespace EnhancedUI.EnhancedScroller
 
             return defaultCellPrefab?.CellSize ?? 0;
         }
+
     }
+
+    public abstract class EnhancedScrollerDelegate<TCellData, TCellView> : EnhancedScrollerDelegate<TCellData, TCellView, NullContext>
+     where TCellData : IEnhancedScrollerCellData
+     where TCellView : EnhancedScrollerCellView<TCellData, NullContext>
+    {
+
+
+    }
+
+
 }

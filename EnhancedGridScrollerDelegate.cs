@@ -12,27 +12,18 @@ namespace EnhancedUI.EnhancedScroller
     where TCellData : class, IEnhancedScrollerCellData
     where TCellView : EnhancedScrollerCellView<TCellData>
     { }
-    public abstract class EnhancedGridScrollerDelegate<TCellData, TCellView, TContext> : MonoBehaviour, IEnhancedScrollerDelegate
+    public abstract class EnhancedGridScrollerDelegate<TCellData, TCellView, TContext> : EnhancedScrollerDelegate<TCellData, TCellView, TContext>
         where TCellData : class, IEnhancedScrollerCellData
         where TCellView : EnhancedScrollerCellView<TCellData, TContext>
         where TContext : class, IEnhancedScrollerContext, new()
     {
         [SerializeField] protected int gridCellCount;
         [SerializeField] protected float cellSpace;
-        [SerializeField] protected EnhancedScroller scroller;
         protected class DefaultCellViewGroup : EnhancedGridScrollerCellViewGroup<TCellData, TCellView, TContext> { }
-        public TContext Context { get; } = new TContext();
         private Transform groupPrefabParent;
 
-
-        protected List<TCellData> cellDatas = new List<TCellData>();
         private Dictionary<string, EnhancedGridScrollerCellViewGroup<TCellData, TCellView, TContext>> groupCellMap = new Dictionary<string, EnhancedGridScrollerCellViewGroup<TCellData, TCellView, TContext>>();
-        private void Start()
-        {
-            scroller.Delegate = this;
-            Initialize();
-        }
-        protected virtual void Initialize() { }
+
         private Transform GetGroupParent()
         {
             groupPrefabParent = new GameObject("GroupPrefabParent").transform;
@@ -73,10 +64,9 @@ namespace EnhancedUI.EnhancedScroller
             return cellView;
         }
 
-        public virtual void SetCellDatas(List<TCellData> datas)
+        protected EnhancedScrollerCellView GetCellViewGroup<TGroup>() where TGroup : EnhancedGridScrollerCellViewGroup<TCellData, TCellView, TContext>
         {
-            cellDatas = datas;
-            scroller.ReloadData();
+            return GetCellViewGroup<TGroup>(defaultCellPrefab);
         }
 
 
@@ -87,13 +77,13 @@ namespace EnhancedUI.EnhancedScroller
         /// <param name="dataIndex"></param>
         /// <param name="cellIndex"></param>
         /// <returns></returns>
-        public abstract EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex);
-        public abstract float GetCellViewSize(EnhancedScroller scroller, int dataIndex);
+        public override abstract EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex);
 
-        public int GetNumberOfCells(EnhancedScroller scroller)
+        public override int GetNumberOfCells(EnhancedScroller scroller)
         {
             return Mathf.CeilToInt((float)cellDatas.Count / gridCellCount);
         }
+
     }
 
 }
