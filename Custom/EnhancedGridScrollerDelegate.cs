@@ -18,7 +18,7 @@ namespace EnhancedUI.EnhancedScroller
         where TContext : class, IEnhancedScrollerContext, new()
     {
         [SerializeField] protected int gridCellCount;
-        [SerializeField] protected float cellSpace;
+        [SerializeField] protected float spaceInGrid;
         protected class DefaultCellViewGroup : EnhancedGridScrollerCellViewGroup<TCellData, TCellView, TContext> { }
         private Transform groupPrefabParent;
 
@@ -26,7 +26,7 @@ namespace EnhancedUI.EnhancedScroller
 
         private Transform GetGroupParent()
         {
-            groupPrefabParent = new GameObject("GroupPrefabParent").transform;
+            groupPrefabParent = new GameObject("GroupPrefabParent", typeof(RectTransform)).transform;
             groupPrefabParent.gameObject.SetActive(false);
             return groupPrefabParent;
         }
@@ -34,7 +34,7 @@ namespace EnhancedUI.EnhancedScroller
         {
             if (!groupCellMap.ContainsKey(cellPrefab.cellIdentifier))
             {
-                var go = new GameObject($"{cellPrefab.cellIdentifier}_Group");
+                var go = new GameObject($"{cellPrefab.cellIdentifier}_Group", typeof(RectTransform));
                 go.transform.SetParent(GetGroupParent());
                 var cellViewGroup = go.AddComponent<TGroup>();
                 cellViewGroup.cellIdentifier = $"{cellPrefab.cellIdentifier}_Group";
@@ -44,9 +44,9 @@ namespace EnhancedUI.EnhancedScroller
                     var cell = Instantiate(cellPrefab, go.transform);
                     var cellReact = cell.GetComponent<RectTransform>();
                     if (scroller.scrollDirection == EnhancedScroller.ScrollDirectionEnum.Vertical)
-                        cellReact.anchoredPosition = new Vector2(i * (cellReact.sizeDelta.x + cellSpace), 0);
+                        cellReact.anchoredPosition = new Vector2(i * (cellReact.sizeDelta.x + spaceInGrid), 0);
                     else
-                        cellReact.anchoredPosition = new Vector2(0, -i * (cellReact.sizeDelta.y + cellSpace));
+                        cellReact.anchoredPosition = new Vector2(0, -i * (cellReact.sizeDelta.y + spaceInGrid));
                     cell.name = $"{cellPrefab.cellIdentifier}_{i}";
                     cellViews[i] = cell;
                 }
@@ -81,6 +81,11 @@ namespace EnhancedUI.EnhancedScroller
 
         public override int GetNumberOfCells(EnhancedScroller scroller)
         {
+            if (cellDatas == null)
+            {
+                return 0;
+            }
+
             return Mathf.CeilToInt((float)cellDatas.Count / gridCellCount);
         }
 

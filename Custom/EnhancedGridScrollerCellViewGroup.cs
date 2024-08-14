@@ -29,7 +29,7 @@ namespace EnhancedUI.EnhancedScroller
             for (int i = 0; i < cellViews.Length; i++)
             {
                 var dataIndex = startingIndex + i;
-                if (dataIndex < cellDatas.Count)
+                if (cellDatas != null && dataIndex < cellDatas.Count)
                 {
                     cellViews[i].gameObject.SetActive(true);
                     cellViews[i].dataIndex = dataIndex;
@@ -38,6 +38,7 @@ namespace EnhancedUI.EnhancedScroller
                 else
                 {
                     cellViews[i].gameObject.SetActive(false);
+                    cellViews[i].SetCellData(null);
                 }
             }
         }

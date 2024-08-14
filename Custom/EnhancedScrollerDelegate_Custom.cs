@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Build;
 using UnityEngine;
 
 namespace EnhancedUI.EnhancedScroller
@@ -9,7 +8,13 @@ namespace EnhancedUI.EnhancedScroller
     where TCellData : IEnhancedScrollerCellData
     {
         [SerializeField] protected EnhancedScroller scroller;
+        public EnhancedScroller Scroller => scroller;
         protected List<TCellData> cellDatas = new List<TCellData>();
+        public bool ScrollRectEnabled
+        {
+            get { return scroller.ScrollRect.enabled; }
+            set { scroller.ScrollRect.enabled = value; }
+        }
         private void Start()
         {
             scroller.Delegate = this;
@@ -31,6 +36,7 @@ namespace EnhancedUI.EnhancedScroller
         {
             return cellDatas.Count;
         }
+
     }
     public abstract class EnhancedScrollerDelegate<TCellData, TCellView, TContext> : EnhancedScrollerDelegate<TCellData>
     where TCellData : IEnhancedScrollerCellData
@@ -44,8 +50,8 @@ namespace EnhancedUI.EnhancedScroller
         public override EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
             var cellView = scroller.GetCellView(defaultCellPrefab) as TCellView;
-            cellView.SetCellData(cellDatas[dataIndex]);
             cellView.SetContext(Context);
+            cellView.SetCellData(cellDatas[dataIndex]);
             return cellView;
         }
         public override float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
