@@ -50,6 +50,10 @@ namespace EnhancedUI.EnhancedScroller
                 cellViews[i].RefreshCellView();
             }
         }
+        public TCellView GetCellViewAtIndex(int index)
+        {
+            return cellViews[index];
+        }
 
     }
 

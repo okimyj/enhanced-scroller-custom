@@ -36,6 +36,10 @@ namespace EnhancedUI.EnhancedScroller
         {
             return cellDatas.Count;
         }
+        public EnhancedScrollerCellView GetCellViewAtDataIndex(int index)
+        {
+            return scroller.GetCellViewAtDataIndex(index);
+        }
 
     }
     public abstract class EnhancedScrollerDelegate<TCellData, TCellView, TContext> : EnhancedScrollerDelegate<TCellData>
@@ -64,6 +68,10 @@ namespace EnhancedUI.EnhancedScroller
 #endif
 
             return defaultCellPrefab?.CellSize ?? 0;
+        }
+        public new virtual TCellView GetCellViewAtDataIndex(int index)
+        {
+            return scroller.GetCellViewAtDataIndex(index) as TCellView;
         }
 
     }

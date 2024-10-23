@@ -28,6 +28,7 @@ namespace EnhancedUI.EnhancedScroller
         {
             groupPrefabParent = new GameObject("GroupPrefabParent", typeof(RectTransform)).transform;
             groupPrefabParent.gameObject.SetActive(false);
+            groupPrefabParent.SetParent(scroller.transform);
             return groupPrefabParent;
         }
         protected virtual TGroup GetCellViewGroupPrefab<TGroup>(TCellView cellPrefab) where TGroup : EnhancedGridScrollerCellViewGroup<TCellData, TCellView, TContext>
@@ -92,3 +93,4 @@ namespace EnhancedUI.EnhancedScroller
     }
 
 }
+

@@ -1221,6 +1221,11 @@ namespace EnhancedUI.EnhancedScroller
             _interruptTween = true;
         }
 
+        public void RecalculateSize() 
+        {
+            _Resize(true);
+        }
+
         #endregion
 
         #region Private
