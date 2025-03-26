@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
@@ -770,7 +770,10 @@ namespace EnhancedUI.EnhancedScroller
 
             _RefreshActive();
             // zero base index.
-            isScrollLock = IsScrollLockShortData && NumberOfCells > 0 && StartDataIndex == 0 && NumberOfCells - 1 <= EndDataIndex;
+            float viewPortSize = scrollDirection == ScrollDirectionEnum.Vertical ? _scrollRect.viewport.rect.height : _scrollRect.viewport.rect.width;
+            float containerSize = scrollDirection == ScrollDirectionEnum.Vertical ? _container.rect.height : _container.rect.width;
+            
+            isScrollLock = IsScrollLockShortData && containerSize <= viewPortSize;
             _scrollRect.enabled = !isScrollLock;
         }
 
@@ -1225,7 +1228,7 @@ namespace EnhancedUI.EnhancedScroller
         {
             _Resize(true);
         }
-
+        public bool IsScrollLock => isScrollLock;
         #endregion
 
         #region Private
