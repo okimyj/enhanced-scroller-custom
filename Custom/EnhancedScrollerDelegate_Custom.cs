@@ -23,10 +23,19 @@ namespace EnhancedUI.EnhancedScroller
         }
         protected virtual void Initialize() { }
         public abstract EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex);
-        public virtual void SetCellDatas(List<TCellData> cellDatas)
+        public virtual void SetCellDatas(List<TCellData> cellDatas, float scrollPositionFactor = 0f)
         {
             this.cellDatas = cellDatas;
-            scroller.ReloadData();
+            scroller.ReloadData(scrollPositionFactor);
+        }
+        public virtual bool SetCellDataAtDataIndex(TCellData cellData, int dataIndex)
+        {
+            if(this.cellDatas.Count > 0 && this.cellDatas.Count > dataIndex)
+            {
+                this.cellDatas[dataIndex] = cellData;
+                return true;
+            }
+            return false;
         }
 
 
@@ -72,6 +81,16 @@ namespace EnhancedUI.EnhancedScroller
         public new virtual TCellView GetCellViewAtDataIndex(int index)
         {
             return scroller.GetCellViewAtDataIndex(index) as TCellView;
+        }
+        public override bool SetCellDataAtDataIndex(TCellData cellData, int dataIndex)
+        {
+            if(base.SetCellDataAtDataIndex(cellData, dataIndex))
+            {
+                var cellView = GetCellViewAtDataIndex(dataIndex);
+                cellView.SetCellData(cellData);
+                return true;
+            }
+            return false;
         }
 
     }
